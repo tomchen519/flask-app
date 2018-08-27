@@ -2,14 +2,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-db_creds = {
-    "HOST": "data-dev.ck4nwjszm2wg.us-east-1.redshift.amazonaws.com",
-    "DATABASE": "test",
-    "USER": "datauser",
-    "PASSWORD": "?daTa_Dev!7",
-    "PORT": "5439",
-}
-
 creds = (
     'redshift+psycopg2://{0}:{1}@{2}:{3}/{4}'.format(
         db_creds['USER'],
