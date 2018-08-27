@@ -2,6 +2,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
+import json
+
+with open('../credentials.json', 'r') as f:
+    db_creds = json.load(f)['db_creds']
+
 creds = (
     'redshift+psycopg2://{0}:{1}@{2}:{3}/{4}'.format(
         db_creds['USER'],
@@ -31,7 +36,7 @@ try:
         print(row)
 
     result.close()
-# print creds
+
 except Exception:
     connection.close()
 
