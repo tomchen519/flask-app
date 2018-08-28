@@ -5,3 +5,5 @@ CREATE TABLE user(
     username TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL
 );
+
+-- Create Tables to contain states/results of specified scripts
