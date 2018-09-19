@@ -1,10 +1,12 @@
 import os
 import importlib
+import datetime as dt
 
 from flask import Flask, request
 
 from instance.config import app_config
-
+# from apscheduler.schedulers.background import BackgroundScheduler
+# from apscheduler.triggers.cron import CronTrigger
 
 def create_app(config_name):
     # create and configure app
@@ -33,7 +35,7 @@ def create_app(config_name):
         func = getattr(mod, handle)
         result = func('a', 'b')
 
-        return 'function completed'
+        print('function {} completed at {}\n'.format(function_name, dt.datetime.now()))
 
         # print(request.method)
         # print(request.get_json().get('account'))
@@ -55,5 +57,11 @@ def create_app(config_name):
     from . import db
     print("registering db")
     db.init_app(app)
+
+    # with app.app_context():
+    #     scheduler = BackgroundScheduler()
+    #     scheduler.add_job(run_func('app_function_test'), CronTrigger.from_crontab('* * * * *'))
+
+    #     scheduler.start()
 
     return app
