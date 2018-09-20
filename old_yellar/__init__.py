@@ -1,6 +1,7 @@
-import os
-import importlib
 import datetime as dt
+import importlib
+import json
+import os
 
 from flask import Flask, request
 
@@ -11,9 +12,15 @@ from instance.config import app_config
 def create_app(config_name):
     # create and configure app
     print("create app")
+    print(os.getcwd())
     app = Flask(__name__, instance_relative_config=True)
 
+    with open('old_yellar/functions/function_config.json', 'r') as f:
+        CONFIG = json.load(f)
+
     print(config_name)
+
+    return_msg = 'function {} completed at {}\n'
 
     if config_name == 'production':
         load_dotenv(dotenv_path='../.prod.env')
@@ -28,14 +35,15 @@ def create_app(config_name):
     @app.route('/run/<function_name>', methods=['GET', 'POST'])
     def run_func(function_name):
         print('running: {}'.format(function_name))
-
-        module = 'flaskr.functions.{}.main'.format(function_name)
+        function_config = CONFIG[function_name]
+        module = 'old_yellar.functions.{}.main'.format(function_name)
         handle = 'handle'
         mod = importlib.import_module(module)
         func = getattr(mod, handle)
-        result = func('a', 'b')
+        result = func(function_config, 'b')
 
-        print('function {} completed at {}\n'.format(function_name, dt.datetime.now()))
+        print(return_msg.format(function_name, dt.datetime.now()))
+        return return_msg.format(function_name, dt.datetime.now())
 
         # print(request.method)
         # print(request.get_json().get('account'))
@@ -46,13 +54,13 @@ def create_app(config_name):
     def run_old_func(function_name):
         print('old function: {}'.format(function_name))
 
-        module = 'flaskr.old_functions.{}.main'.format(function_name)
+        module = 'old_yellar.old_functions.{}.main'.format(function_name)
         handle = 'handle'
         mod = importlib.import_module(module)
         func = getattr(mod, handle)
         result = func('a', 'b')
-
-        return 'function completed'
+        print(return_msg.format(function_name, dt.datetime.now()))
+        return return_msg.format(function_name, dt.datetime.now())
 
     from . import db
     print("registering db")
